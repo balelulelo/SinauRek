@@ -9,6 +9,10 @@ use Livewire\Volt\Component;
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public string $bio = '';
+    public string $major = '';
+    public string $subjects = '';
+    public string $availability = '';
 
     /**
      * Mount the component.
@@ -17,6 +21,10 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->bio = Auth::user()->bio;
+        $this->major = Auth::user()->major;
+        $this->subjects = Auth::user()->subjects;
+        $this->availability = Auth::user()->availability;
     }
 
     /**
@@ -28,7 +36,6 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'string',
@@ -37,6 +44,10 @@ new class extends Component {
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id)
             ],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'major' => ['nullable', 'string', 'max:255'],
+            'subjects' => ['nullable', 'string', 'max:255'],
+            'availability' => ['nullable', 'string', 'max:255'],
         ]);
 
         $user->fill($validated);
@@ -77,7 +88,20 @@ new class extends Component {
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                 
+                 {{-- ... email verification part ... --}}
+            </div>
+            
+            <flux:textarea wire:model="bio" :label="__('Bio')" />
+            
+            <flux:input wire:model="major" :label="__('Major / Field of Study')" type="text" />
+            
+            <flux:input wire:model="subjects" :label="__('Subjects of Interest')" type="text" placeholder="e.g., Calculus, History, Chemistry" />
+            
+            <flux:input wire:model="availability" :label="__('Time Availability')" type="text" placeholder="e.g., Weekend" />
+
+            <div class="flex items-center gap-4">
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>
